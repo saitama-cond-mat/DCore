@@ -8,4 +8,7 @@ FILE(COPY  test_momdist_ref.dat DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 FILE(COPY  test_dos0_ref.dat DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 FILE(COPY  test_akw0_ref.dat DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-triqs_add_python_test(post_chain_hubbardI)
+add_test(NAME post_chain_hubbardI COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/post_chain_hubbardI.py)
+# Set the PythonPath : put the build dir first (in case there is an installed version).
+set_property(TEST post_chain_hubbardI PROPERTY ENVIRONMENT PYTHONPATH=${CMAKE_BINARY_DIR}/python:$ENV{PYTHONPATH} )
+

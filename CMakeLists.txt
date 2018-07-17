@@ -1,40 +1,68 @@
-# Version number of the application
-set (DCORE_VERSION "1.0")
-set (DCORE_RELEASE "1.0.0")
+# Default to Release build type
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Type of build" FORCE)
+endif()
+message( STATUS "-------- BUILD-TYPE: ${CMAKE_BUILD_TYPE} -------------")
 
-# Append triqs installed files to the cmake load path
-list(APPEND CMAKE_MODULE_PATH ${TRIQS_PATH}/share/triqs/cmake)
-
-# start configuration 
+# start configuration
 cmake_minimum_required(VERSION 2.8)
-project(DCore CXX NONE)
-set(CMAKE_BUILD_TYPE Release)
-enable_testing()
+project(DCore CXX Fortran)
 
-# Load TRIQS, including all predefined variables from TRIQS installation
-find_package(TRIQS REQUIRED)
+# Load TRIQS and Cpp2Py
+find_package(TRIQS 2.0 REQUIRED)
+find_package(Cpp2Py 1.5 REQUIRED)
 
 if (NOT ${TRIQS_WITH_PYTHON_SUPPORT})
- MESSAGE(FATAL_ERROR "dft_tools require Python support in TRIQS")
+ MESSAGE(FATAL_ERROR "DCore require Python support in TRIQS")
 endif()
 
-# Get hash
-triqs_get_git_hash(${CMAKE_SOURCE_DIR} "DCORE")
-if(${GIT_RESULT} EQUAL 0)
-  message(STATUS "Hash: ${DCORE_GIT_HASH}")
-endif(${GIT_RESULT} EQUAL 0)
+# Default Install directory to TRIQS_ROOT if not given. Checks an absolute name is given.
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR (NOT IS_ABSOLUTE ${CMAKE_INSTALL_PREFIX}))
+  message(STATUS " No install prefix given (or invalid). Defaulting to TRIQS_ROOT")
+  set(CMAKE_INSTALL_PREFIX ${TRIQS_ROOT} CACHE PATH "default install path" FORCE)
+endif()
+message(STATUS "-------- CMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX} -------------")
 
-# We want to be installed in the TRIQS tree
-set(CMAKE_INSTALL_PREFIX ${TRIQS_PATH})
+# Use git to detect Cthyb version and git hash
+execute_process(COMMAND bash "-c" "${TRIQS_GIT_EXECUTABLE} describe | sed \"s/-\\([0-9]*\\)-.*/.\\1/g\""
+ WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+ OUTPUT_VARIABLE   DCORE_VERSION
+ OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+if(NOT DCORE_VERSION)
+  set(DCORE_VERSION v2.0.0)
+endif()
+triqs_get_git_hash_of_source_dir(DCORE_GIT_HASH)
+MESSAGE(STATUS "DCore version : ${DCORE_VERSION}")
+message(STATUS "Git hash: ${DCORE_GIT_HASH}")
 
+# Add the compiling options (-D... ) for C++
+message(STATUS "TRIQS : Adding compilation flags detected by the library (C++11/14, libc++, etc...) ")
+
+add_subdirectory(fortran) 
 add_subdirectory(python)
 add_subdirectory(shells)
-add_subdirectory(test)
 add_subdirectory(tools)
-option(BUILD_DOC "Build documentation" OFF)
-if(${BUILD_DOC})
-  if(NOT TRIQS_WITH_DOCUMENTATION)
+
+#------------------------
+# tests
+#------------------------
+ 
+enable_testing()
+ 
+option(Build_Tests "Build the tests of the library " ON)
+if (Build_Tests)
+  message(STATUS "-------- Preparing tests  -------------")
+ add_subdirectory(test)
+endif()
+
+#------------------------
+# Documentation
+#------------------------
+option(Build_Documentation "Build documentation" OFF)
+if(${Build_Documentation})
+  if(NOT ${TRIQS_WITH_DOCUMENTATION})
     message("Error: TRIQS library has not been compiled with its documentation")
   endif()
   add_subdirectory(doc)
-endif(${BUILD_DOC})
+endif()

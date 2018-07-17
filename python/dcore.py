@@ -19,7 +19,7 @@
 from __future__ import print_function
 import sys
 import argparse
-from pytriqs.applications.dft.sumk_dft import *
+from triqs_dft_tools.sumk_dft import *
 from dmft_core import DMFTCoreSolver
 
 from program_options import *

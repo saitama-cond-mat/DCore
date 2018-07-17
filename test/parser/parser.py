@@ -17,7 +17,7 @@
 #
 from __future__ import print_function
 
-from pytriqs.applications.dcore.typed_parser import TypedParser
+from typed_parser import *
 
 
 def read_file():

@@ -22,7 +22,7 @@ import re
 import time
 import __builtin__
 from pytriqs.operators.util import *
-from pytriqs.applications.dft.sumk_dft import *
+from triqs_dft_tools.sumk_dft import *
 from pytriqs.operators import *
 import numpy
 from program_options import *
@@ -94,9 +94,10 @@ class DMFTCoreSolver:
 
             # Use GF structure determined by DFT blocks
             gf_struct = self.SK.gf_struct_solver[ish]
+            print("debug ", gf_struct)
 
             if self.solver_name == "TRIQS/cthyb":
-                from pytriqs.applications.impurity_solvers.cthyb import Solver
+                from triqs_cthyb import Solver
                 if params['system']['n_l'] > 0:
                     self._solver_params['measure_g_l'] = True
                     self._solver_params['measure_g_tau'] = False
@@ -110,7 +111,7 @@ class DMFTCoreSolver:
                 from hubbard_solver_matrix import Solver
                 self.S.append(Solver(beta=beta, norb=n_orb, n_msb=n_iw, use_spin_orbit=self.SK.SO))
             elif self.solver_name == "ALPS/cthyb":
-                from pytriqs.applications.impurity_solvers.alps_cthyb import Solver
+                from impurity_solvers.alps_cthyb import Solver
                 if params['system']['n_l'] > 0:
                     self.S.append(Solver(beta=beta, gf_struct=gf_struct, assume_real=False,
                                          n_iw=n_iw, n_tau=n_tau, n_l=params['system']['n_l']))

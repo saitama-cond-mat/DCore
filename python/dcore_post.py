@@ -22,8 +22,8 @@ import argparse
 import re
 from dmft_core import DMFTCoreSolver
 from program_options import create_parser
-from pytriqs.applications.dft.sumk_dft_tools import *
-from pytriqs.applications.dft.converters.wannier90_converter import Wannier90Converter
+from triqs_dft_tools.sumk_dft_tools import *
+from triqs_dft_tools.converters.wannier90_converter import Wannier90Converter
 
 
 class DMFTCoreTools:

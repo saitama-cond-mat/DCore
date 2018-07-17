@@ -23,8 +23,8 @@ import numpy
 import argparse
 import re
 from pytriqs.archive.hdf_archive import HDFArchive
-from pytriqs.applications.dft.converters.wannier90_converter import Wannier90Converter
-from pytriqs.applications.dft.converters.hk_converter import HkConverter
+from triqs_dft_tools.converters.wannier90_converter import Wannier90Converter
+from triqs_dft_tools.converters.hk_converter import HkConverter
 from program_options import create_parser
 import pytriqs.utility.mpi as mpi
 from pytriqs.operators.util.U_matrix import U_J_to_radial_integrals, U_matrix, eg_submatrix, t2g_submatrix

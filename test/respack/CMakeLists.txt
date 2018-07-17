@@ -8,4 +8,7 @@ FILE(COPY sr2vo4_jr_ref.dat DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 FILE(COPY sr2vo4_ur_ref.dat DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 FILE(COPY ../../tools/respack2wan90.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-triqs_add_python_test(respack)
+add_test(NAME respack COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/respack.py)
+# Set the PythonPath : put the build dir first (in case there is an installed version). 
+set_property(TEST respack PROPERTY ENVIRONMENT PYTHONPATH=${CMAKE_BINARY_DIR}/python:$ENV{PYTHONPATH} )
+

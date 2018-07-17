@@ -4,4 +4,7 @@ FILE(COPY srvo3_hr_ref.dat DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 FILE(COPY srvo3_band_ref.dat DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 FILE(COPY ../../tools/openmx2dcore.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-triqs_add_python_test(openmx)
+add_test(NAME openmx COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/openmx.py)
+
+# Set the PythonPath : put the build dir first (in case there is an installed version). 
+set_property(TEST openmx PROPERTY ENVIRONMENT PYTHONPATH=${CMAKE_BINARY_DIR}/python:$ENV{PYTHONPATH} )
